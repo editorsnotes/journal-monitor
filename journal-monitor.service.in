@@ -1,0 +1,7 @@
+[Unit]
+Description=command that checks systemd journal for new entries
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/journal-monitor 'RECIPIENTS' PRIORITY SERVICES
+User=root

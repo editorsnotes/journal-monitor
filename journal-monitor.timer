@@ -1,0 +1,9 @@
+[Unit]
+Description=run journal-monitor periodically
+
+[Timer]
+OnBootSec=15min
+OnActiveSec=15min
+
+[Install]
+WantedBy=timers.target

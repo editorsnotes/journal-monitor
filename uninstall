@@ -1,0 +1,6 @@
+#! /bin/sh
+
+rm -f /etc/systemd/system/journal-monitor.timer
+rm -f /etc/systemd/system/journal-monitor.service
+rm -f /usr/local/bin/journal-monitor
+rm -f /run/journal-monitor.cursor

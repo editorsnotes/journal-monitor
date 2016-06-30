@@ -1,0 +1,24 @@
+#!/bin/bash
+set -euo pipefail
+
+script=`basename "$0"`
+
+if [ "$#" -lt 3 ]
+then
+    echo "Usage: $script recipients priority unit1 unit2 ..."
+    exit 1
+fi
+
+recipients="$1"
+priority="$2"
+shift 2
+units="$@"
+
+cat journal-monitor.service.in \
+    | sed "s/RECIPIENTS/$recipients/" \
+    | sed "s/PRIORITY/$priority/" \
+    | sed "s/SERVICES/$units/" \
+    > /etc/systemd/system/journal-monitor.service
+
+cp journal-monitor /usr/local/bin
+cp journal-monitor.timer /etc/systemd/system/

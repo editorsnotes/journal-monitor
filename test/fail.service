@@ -1,0 +1,7 @@
+[Unit]
+Description=test service that writes to stderr
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/fail
+User=nobody

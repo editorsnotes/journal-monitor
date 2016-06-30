@@ -1,0 +1,58 @@
+#!/bin/bash
+set -euo pipefail
+
+script=`basename "$0"`
+
+if [ "$#" -lt 3 ]
+then
+    echo "Usage: $script recipients priority unit1 unit2 ..."
+    exit 1
+fi
+
+recipients="$1"
+priority="--priority=$2"
+
+shift 2
+
+args=( "$@" )
+units="${args[@]/#/--unit=}"
+
+since="--boot"
+cursor="/run/$script.cursor"
+if [ -e "$cursor" ]
+then
+    since="--after-cursor=$(cat $cursor)"
+fi
+
+command=(
+    journalctl
+    "$priority"
+    "$units"
+    "$since"
+    --no-pager
+    --quiet
+    --show-cursor
+)
+
+output=`${command[@]}`
+readarray lines <<< "$output"
+
+if [ "${#lines[@]}" -gt 1 ]
+then
+    entries=( "${lines[@]:0:${#lines[@]}-1}" )
+    log=" ${entries[@]}"
+    /sbin/sendmail -t <<ERRMAIL
+To: $recipients
+From: $script <$USER@$HOSTNAME>
+Subject: Problems with: ${args[@]}
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+Log entries:
+
+$log
+ERRMAIL
+fi
+
+newcursor="${lines[-1]%$'\n'}"
+echo "$newcursor" | cut -f3 -d" " > "$cursor"

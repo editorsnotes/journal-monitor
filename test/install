@@ -1,0 +1,5 @@
+#! /bin/sh
+
+cp fail /usr/local/bin/
+cp fail.service /etc/systemd/system/
+systemctl start fail.service
