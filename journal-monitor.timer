@@ -1,5 +1,5 @@
 [Unit]
-Description=run journal-monitor periodically
+Description=timer to run journal-monitor periodically
 
 [Timer]
 OnBootSec=15min
